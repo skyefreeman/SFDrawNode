@@ -15,6 +15,7 @@
 		EEB870911AD1DE00000D21E6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EEB870901AD1DE00000D21E6 /* Images.xcassets */; };
 		EEB870941AD1DE00000D21E6 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = EEB870921AD1DE00000D21E6 /* LaunchScreen.xib */; };
 		EEB870A01AD1DE00000D21E6 /* SFDrawNodeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EEB8709F1AD1DE00000D21E6 /* SFDrawNodeTests.m */; };
+		EEB870AD1AD1DEE7000D21E6 /* SFDrawNode.m in Sources */ = {isa = PBXBuildFile; fileRef = EEB870AC1AD1DEE7000D21E6 /* SFDrawNode.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,8 @@
 		EEB870991AD1DE00000D21E6 /* SFDrawNodeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SFDrawNodeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEB8709E1AD1DE00000D21E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EEB8709F1AD1DE00000D21E6 /* SFDrawNodeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SFDrawNodeTests.m; sourceTree = "<group>"; };
+		EEB870AB1AD1DEE7000D21E6 /* SFDrawNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFDrawNode.h; sourceTree = "<group>"; };
+		EEB870AC1AD1DEE7000D21E6 /* SFDrawNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SFDrawNode.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +87,8 @@
 		EEB8707D1AD1DE00000D21E6 /* SFDrawNode */ = {
 			isa = PBXGroup;
 			children = (
+				EEB870AB1AD1DEE7000D21E6 /* SFDrawNode.h */,
+				EEB870AC1AD1DEE7000D21E6 /* SFDrawNode.m */,
 				EEB870AA1AD1DE32000D21E6 /* Scenes */,
 				EEB870A91AD1DE26000D21E6 /* Application */,
 				EEB870901AD1DE00000D21E6 /* Images.xcassets */,
@@ -243,6 +248,7 @@
 				EEB8708C1AD1DE00000D21E6 /* GameViewController.m in Sources */,
 				EEB870841AD1DE00000D21E6 /* AppDelegate.m in Sources */,
 				EEB870871AD1DE00000D21E6 /* GameScene.m in Sources */,
+				EEB870AD1AD1DEE7000D21E6 /* SFDrawNode.m in Sources */,
 				EEB870811AD1DE00000D21E6 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

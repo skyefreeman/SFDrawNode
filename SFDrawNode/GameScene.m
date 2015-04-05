@@ -7,10 +7,16 @@
 //
 
 #import "GameScene.h"
+#import "SFDrawNode.h"
 
 @implementation GameScene
 
 -(void)didMoveToView:(SKView *)view {
+    [self setBackgroundColor:[SKColor whiteColor]];
+    
+    SFDrawNode *drawNode = [SFDrawNode nodeWithSize:self.size];
+    [drawNode setAnchorPoint:CGPointMake(0, 0)];
+    [self addChild:drawNode];
 }
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
