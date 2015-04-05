@@ -10,7 +10,6 @@
 		EEB870811AD1DE00000D21E6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EEB870801AD1DE00000D21E6 /* main.m */; };
 		EEB870841AD1DE00000D21E6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EEB870831AD1DE00000D21E6 /* AppDelegate.m */; };
 		EEB870871AD1DE00000D21E6 /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = EEB870861AD1DE00000D21E6 /* GameScene.m */; };
-		EEB870891AD1DE00000D21E6 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = EEB870881AD1DE00000D21E6 /* GameScene.sks */; };
 		EEB8708C1AD1DE00000D21E6 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEB8708B1AD1DE00000D21E6 /* GameViewController.m */; };
 		EEB8708F1AD1DE00000D21E6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EEB8708D1AD1DE00000D21E6 /* Main.storyboard */; };
 		EEB870911AD1DE00000D21E6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EEB870901AD1DE00000D21E6 /* Images.xcassets */; };
@@ -36,7 +35,6 @@
 		EEB870831AD1DE00000D21E6 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		EEB870851AD1DE00000D21E6 /* GameScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
 		EEB870861AD1DE00000D21E6 /* GameScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameScene.m; sourceTree = "<group>"; };
-		EEB870881AD1DE00000D21E6 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		EEB8708A1AD1DE00000D21E6 /* GameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
 		EEB8708B1AD1DE00000D21E6 /* GameViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
 		EEB8708E1AD1DE00000D21E6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -86,16 +84,9 @@
 		EEB8707D1AD1DE00000D21E6 /* SFDrawNode */ = {
 			isa = PBXGroup;
 			children = (
-				EEB870821AD1DE00000D21E6 /* AppDelegate.h */,
-				EEB870831AD1DE00000D21E6 /* AppDelegate.m */,
-				EEB870851AD1DE00000D21E6 /* GameScene.h */,
-				EEB870861AD1DE00000D21E6 /* GameScene.m */,
-				EEB870881AD1DE00000D21E6 /* GameScene.sks */,
-				EEB8708A1AD1DE00000D21E6 /* GameViewController.h */,
-				EEB8708B1AD1DE00000D21E6 /* GameViewController.m */,
-				EEB8708D1AD1DE00000D21E6 /* Main.storyboard */,
+				EEB870AA1AD1DE32000D21E6 /* Scenes */,
+				EEB870A91AD1DE26000D21E6 /* Application */,
 				EEB870901AD1DE00000D21E6 /* Images.xcassets */,
-				EEB870921AD1DE00000D21E6 /* LaunchScreen.xib */,
 				EEB8707E1AD1DE00000D21E6 /* Supporting Files */,
 			);
 			path = SFDrawNode;
@@ -104,6 +95,8 @@
 		EEB8707E1AD1DE00000D21E6 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				EEB8708D1AD1DE00000D21E6 /* Main.storyboard */,
+				EEB870921AD1DE00000D21E6 /* LaunchScreen.xib */,
 				EEB8707F1AD1DE00000D21E6 /* Info.plist */,
 				EEB870801AD1DE00000D21E6 /* main.m */,
 			);
@@ -125,6 +118,26 @@
 				EEB8709E1AD1DE00000D21E6 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EEB870A91AD1DE26000D21E6 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				EEB870821AD1DE00000D21E6 /* AppDelegate.h */,
+				EEB870831AD1DE00000D21E6 /* AppDelegate.m */,
+				EEB8708A1AD1DE00000D21E6 /* GameViewController.h */,
+				EEB8708B1AD1DE00000D21E6 /* GameViewController.m */,
+			);
+			name = Application;
+			sourceTree = "<group>";
+		};
+		EEB870AA1AD1DE32000D21E6 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				EEB870851AD1DE00000D21E6 /* GameScene.h */,
+				EEB870861AD1DE00000D21E6 /* GameScene.m */,
+			);
+			name = Scenes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -209,7 +222,6 @@
 			files = (
 				EEB870941AD1DE00000D21E6 /* LaunchScreen.xib in Resources */,
 				EEB870911AD1DE00000D21E6 /* Images.xcassets in Resources */,
-				EEB870891AD1DE00000D21E6 /* GameScene.sks in Resources */,
 				EEB8708F1AD1DE00000D21E6 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
