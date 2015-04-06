@@ -78,6 +78,7 @@
         [self.layers removeLastObject];
     }
 }
+
 #pragma mark - Touch Input
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
@@ -112,7 +113,10 @@
         SKShapeNode *endPathShape = self.currentDrawShape.copy;
         [[self currentLayer] addChild:endPathShape];
         
+        NSLog(@"%@",endPathShape);
+        
         [self.currentDrawShape removeFromParent];
+        self.currentDrawShape = nil;
     }
 }
 

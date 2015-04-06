@@ -23,6 +23,7 @@
     [self addChild:self.drawNode];
     
     SKSpriteNode *button = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100, 100)];
+    [button setPosition:CGPointMake(button.size.width/2, button.size.height/2)];
     [button setName:@"button"];
     [button setZPosition:10];
     [self addChild:button];
