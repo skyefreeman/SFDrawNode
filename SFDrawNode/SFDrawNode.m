@@ -8,14 +8,14 @@
 
 #import "SFDrawNode.h"
 
+NSUInteger const kCacheSize = 10;
+
+CGFloat const kDefaultLineWidth = 10.0;
+CGFloat const kDefaultLineCap = kCGLineCapRound;
+
+#define kDefaultColor [SKColor blackColor];
+
 @interface SFDrawNode()
-@property (nonatomic) NSMutableArray *allPathColors;
-
-
-@property (nonatomic) NSMutableArray *currentPathSegments;
-
-@property (nonatomic) SKShapeNode *currentDrawShape;
-
 @end
 
 @implementation SFDrawNode {
@@ -35,13 +35,15 @@
     if (self) {
         self.userInteractionEnabled = YES;
 
+        self.drawColor = kDefaultColor;
+        self.lineWidth = kDefaultLineWidth;
+        self.lineCap = kDefaultLineCap;
+        
         _pool = [NSMutableArray new];
         [self populateShapeNodePool];
         
         _canvas = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:size];
         [self addChild:_canvas];
-        
-        self.drawColor = [SKColor blackColor];
     }
     
     return self;
@@ -49,7 +51,11 @@
 
 #pragma mark - SKShapeNode Pool
 - (void)populateShapeNodePool {
-    for (int i = 0; i < 5; i++) {
+    if (_pool.count > 0) {
+        [_pool removeAllObjects];
+    }
+    
+    for (int i = 0; i < kCacheSize; i++) {
         SKShapeNode *segment = [SKShapeNode new];
         [_pool addObject:segment];
     }
@@ -84,18 +90,30 @@
     
     SKShapeNode *newSegment = [self getShapeFromPool];
     [newSegment setStrokeColor:self.drawColor];
-    [newSegment setLineWidth:10.0];
-    [newSegment setLineCap:kCGLineCapRound];
+    [newSegment setLineWidth:self.lineWidth];
+    [newSegment setLineCap:self.lineCap];
     [newSegment setName:@"segment"];
     [newSegment setPath:path];
+    [newSegment setZPosition:1];
+    [_canvas addChild:newSegment];
     
     _lastPoint = secondPoint;
-    [_canvas addChild:newSegment];
 }
 
 #pragma mark - DrawNode Controls
 - (void)eraseCanvas {
     [_canvas setTexture:nil];
+}
+
+- (void)fadeOutCanvasWithDuration:(CGFloat)duration {
+    if ([_canvas hasActions]) return;
+    
+    self.userInteractionEnabled = NO;
+    [_canvas runAction:[SKAction fadeOutWithDuration:duration] completion:^{
+        [self eraseCanvas];
+        self.userInteractionEnabled = YES;
+        [_canvas setAlpha:1];
+    }];
 }
 
 #pragma mark - Touch Input
