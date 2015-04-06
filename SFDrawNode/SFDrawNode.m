@@ -66,7 +66,7 @@
 }
 
 - (void)cacheSegments {
-    SKTexture *cachedTexture = [self.scene.view textureFromNode:self];
+    SKTexture *cachedTexture = [self.scene.view textureFromNode:self crop:self.frame];
     [_canvas setTexture:cachedTexture];
     
     [_canvas enumerateChildNodesWithName:@"segment" usingBlock:^(SKNode *node, BOOL *stop) {
