@@ -9,17 +9,33 @@
 #import "GameScene.h"
 #import "SFDrawNode.h"
 
+@interface GameScene()
+@property (nonatomic) SFDrawNode *drawNode;
+@end
+
 @implementation GameScene
 
 -(void)didMoveToView:(SKView *)view {
     [self setBackgroundColor:[SKColor whiteColor]];
     
-    SFDrawNode *drawNode = [SFDrawNode nodeWithSize:self.size];
-    [drawNode setAnchorPoint:CGPointMake(0, 0)];
-    [self addChild:drawNode];
+    self.drawNode = [SFDrawNode nodeWithSize:self.size];
+    [self.drawNode setAnchorPoint:CGPointMake(0, 0)];
+    [self addChild:self.drawNode];
+    
+    SKSpriteNode *button = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100, 100)];
+    [button setName:@"button"];
+    [button setZPosition:10];
+    [self addChild:button];
 }
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    CGPoint point = [touch locationInNode:self];
+    SKNode *node = [self nodeAtPoint:point];
+    
+    if ([node.name isEqualToString:@"button"]) {
+        [self.drawNode eraseCurrentLayer];
+    }
 }
 
 -(void)update:(CFTimeInterval)currentTime {

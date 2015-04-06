@@ -10,7 +10,15 @@
 
 @interface SFDrawNode : SKSpriteNode
 
+@property (nonatomic) CGLineCap lineCap;
+@property (nonatomic) CGFloat *lineWidth;
 @property (nonatomic) SKColor *drawColor;
 
+// Creates a drawing canvas with a given size.
 + (instancetype)nodeWithSize:(CGSize)size;
+
+// Erases the current drawing layer.
+- (void)eraseCurrentLayer;
+
+
 @end

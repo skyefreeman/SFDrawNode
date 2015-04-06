@@ -16,7 +16,6 @@
 
 @property (nonatomic) SKShapeNode *currentDrawShape;
 
-@property (nonatomic) NSMutableDictionary *currentPathGroup;
 @end
 
 @implementation SFDrawNode
@@ -34,7 +33,6 @@
         
         self.drawColor = [SKColor blackColor];
         self.layers = [NSMutableArray new];
-        self.currentPathGroup = [NSMutableDictionary new];
     }
     
     return self;
@@ -46,7 +44,7 @@
     [circle setFillColor:self.drawColor];
     [circle setStrokeColor:[SKColor clearColor]];
     [circle setPosition:point];
-    [self addChild:circle];
+    [[self currentLayer] addChild:circle];
 }
 
 - (void)drawLineForPath:(CGPathRef)path {
@@ -58,20 +56,38 @@
     [self.currentDrawShape setLineWidth:10];
     [self.currentDrawShape setLineCap:kCGLineCapRound];
     [self.currentDrawShape setStrokeColor:self.drawColor];
-    [self addChild:self.currentDrawShape];
-    
-    path = nil;
+    [[self currentLayer] addChild:self.currentDrawShape];
 }
 
+#pragma mark - Layering
+- (void)newLayer {
+    SKNode *layer = [SKNode new];
+    [self addChild:layer];
+    
+    [self.layers addObject:layer];
+}
+
+- (SKNode*)currentLayer {
+    return [self.layers lastObject];
+}
+
+- (void)eraseCurrentLayer {
+    if (self.layers.count > 0) {
+        SKNode *layer = [self.layers lastObject];
+        [layer removeFromParent];
+        [self.layers removeLastObject];
+    }
+}
 #pragma mark - Touch Input
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     CGPoint point = [touch locationInNode:self];
-    
+
     CGMutablePathRef newPath = CGPathCreateMutable();
     CGPathMoveToPoint(newPath, nil, point.x, point.y);
     self.currentPath = newPath;
-
+    
+    [self newLayer];
     [self drawCircleAtPoint:point];
 }
 
@@ -89,6 +105,14 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if (self.currentPath) {
         CGPathCloseSubpath(self.currentPath);
+        self.currentPath = nil;
+    }
+    
+    if (self.currentDrawShape) {
+        SKShapeNode *endPathShape = self.currentDrawShape.copy;
+        [[self currentLayer] addChild:endPathShape];
+        
+        [self.currentDrawShape removeFromParent];
     }
 }
 
