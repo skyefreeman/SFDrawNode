@@ -18,10 +18,10 @@
 -(void)didMoveToView:(SKView *)view {
     [self setBackgroundColor:[SKColor whiteColor]];
     
-    self.drawNode = [SFDrawNode nodeWithSize:self.size];
-    [self.drawNode setAnchorPoint:CGPointMake(0, 0)];
+    self.drawNode = [SFDrawNode nodeWithSize:CGSizeMake(self.size.width, self.size.height)];
+    [self.drawNode setPosition:CGPointMake(self.size.width/2, self.size.height/2)];
     [self addChild:self.drawNode];
-    
+
     SKSpriteNode *button = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100, 100)];
     [button setPosition:CGPointMake(button.size.width/2, button.size.height/2)];
     [button setName:@"button"];
@@ -35,7 +35,7 @@
     SKNode *node = [self nodeAtPoint:point];
     
     if ([node.name isEqualToString:@"button"]) {
-        [self.drawNode eraseCurrentLayer];
+        [self.drawNode eraseCanvas];
     }
 }
 

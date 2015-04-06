@@ -17,8 +17,9 @@
 // Creates a drawing canvas with a given size.
 + (instancetype)nodeWithSize:(CGSize)size;
 
-// Erases the current drawing layer.
-- (void)eraseCurrentLayer;
+// Erases the canvas.
+- (void)eraseCanvas;
 
 
 @end
+

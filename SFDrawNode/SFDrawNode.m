@@ -11,14 +11,18 @@
 @interface SFDrawNode()
 @property (nonatomic) NSMutableArray *allPathColors;
 
-@property (nonatomic) NSMutableArray *layers;
-@property (nonatomic) CGMutablePathRef currentPath;
+
+@property (nonatomic) NSMutableArray *currentPathSegments;
 
 @property (nonatomic) SKShapeNode *currentDrawShape;
 
 @end
 
-@implementation SFDrawNode
+@implementation SFDrawNode {
+    NSMutableArray *_pool;
+    SKSpriteNode *_canvas;
+    CGPoint _lastPoint;
+}
 
 #pragma mark - Designated init
 + (instancetype)nodeWithSize:(CGSize)size {
@@ -30,92 +34,89 @@
     
     if (self) {
         self.userInteractionEnabled = YES;
+
+        _pool = [NSMutableArray new];
+        [self populateShapeNodePool];
+        
+        _canvas = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:size];
+        [self addChild:_canvas];
         
         self.drawColor = [SKColor blackColor];
-        self.layers = [NSMutableArray new];
     }
     
     return self;
 }
 
-#pragma mark - SKShapeNode Rendering
-- (void)drawCircleAtPoint:(CGPoint)point {
-    SKShapeNode *circle = [SKShapeNode shapeNodeWithCircleOfRadius:5];
-    [circle setFillColor:self.drawColor];
-    [circle setStrokeColor:[SKColor clearColor]];
-    [circle setPosition:point];
-    [[self currentLayer] addChild:circle];
+#pragma mark - SKShapeNode Pool
+- (void)populateShapeNodePool {
+    for (int i = 0; i < 5; i++) {
+        SKShapeNode *segment = [SKShapeNode new];
+        [_pool addObject:segment];
+    }
 }
 
-- (void)drawLineForPath:(CGPathRef)path {
-    if (self.currentDrawShape) {
-        [self.currentDrawShape removeFromParent];
+- (SKShapeNode*)getShapeFromPool {
+    if (_pool.count == 0) {
+        [self cacheSegments];
     }
     
-    self.currentDrawShape = [SKShapeNode shapeNodeWithPath:path];
-    [self.currentDrawShape setLineWidth:10];
-    [self.currentDrawShape setLineCap:kCGLineCapRound];
-    [self.currentDrawShape setStrokeColor:self.drawColor];
-    [[self currentLayer] addChild:self.currentDrawShape];
+    SKShapeNode *segment = [_pool objectAtIndex:0];
+    [_pool removeObjectAtIndex:0];
+    return segment;
 }
 
-#pragma mark - Layering
-- (void)newLayer {
-    SKNode *layer = [SKNode new];
-    [self addChild:layer];
+- (void)cacheSegments {
+    SKTexture *cachedTexture = [self.scene.view textureFromNode:self];
+    [_canvas setTexture:cachedTexture];
     
-    [self.layers addObject:layer];
+    [_canvas enumerateChildNodesWithName:@"segment" usingBlock:^(SKNode *node, BOOL *stop) {
+        [_pool addObject:node];
+        [node removeFromParent];
+    }];
 }
 
-- (SKNode*)currentLayer {
-    return [self.layers lastObject];
+#pragma mark - Segment Rendering
+- (void)drawLineFromPoint:(CGPoint)firstPoint toPoint:(CGPoint)secondPoint {
+
+    CGMutablePathRef path = CGPathCreateMutable();
+    CGPathMoveToPoint(path, nil, firstPoint.x, firstPoint.y);
+    CGPathAddLineToPoint(path, nil, secondPoint.x, secondPoint.y);
+    
+    SKShapeNode *newSegment = [self getShapeFromPool];
+    [newSegment setStrokeColor:self.drawColor];
+    [newSegment setLineWidth:10.0];
+    [newSegment setLineCap:kCGLineCapRound];
+    [newSegment setName:@"segment"];
+    [newSegment setPath:path];
+    
+    _lastPoint = secondPoint;
+    [_canvas addChild:newSegment];
 }
 
-- (void)eraseCurrentLayer {
-    if (self.layers.count > 0) {
-        SKNode *layer = [self.layers lastObject];
-        [layer removeFromParent];
-        [self.layers removeLastObject];
-    }
+#pragma mark - DrawNode Controls
+- (void)eraseCanvas {
+    [_canvas setTexture:nil];
 }
 
 #pragma mark - Touch Input
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-    CGPoint point = [touch locationInNode:self];
-
-    CGMutablePathRef newPath = CGPathCreateMutable();
-    CGPathMoveToPoint(newPath, nil, point.x, point.y);
-    self.currentPath = newPath;
-    
-    [self newLayer];
-    [self drawCircleAtPoint:point];
+    [self cacheSegments];
+    for (UITouch *touch in touches) {
+        CGPoint point = [touch locationInNode:self];
+        _lastPoint = point;
+        [self drawLineFromPoint:_lastPoint toPoint:point];
+    }
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *touch in touches) {
-        if (!self.currentPath) return;
-        
         CGPoint point = [touch locationInNode:self];
-        CGPathAddLineToPoint(self.currentPath, nil, point.x, point.y);
+        [self drawLineFromPoint:_lastPoint toPoint:point];
     }
-    
-    [self drawLineForPath:self.currentPath];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    if (self.currentPath) {
-        CGPathCloseSubpath(self.currentPath);
-        self.currentPath = nil;
-    }
-    
-    if (self.currentDrawShape) {
-        SKShapeNode *endPathShape = self.currentDrawShape.copy;
-        [[self currentLayer] addChild:endPathShape];
-        
-        [self.currentDrawShape removeFromParent];
-        self.currentDrawShape = nil;
-    }
+    [self cacheSegments];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
