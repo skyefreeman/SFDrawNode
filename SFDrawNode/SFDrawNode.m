@@ -129,7 +129,10 @@ CGFloat const kDefaultLineCap = kCGLineCapRound;
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *touch in touches) {
         CGPoint point = [touch locationInNode:self];
-        [self drawLineFromPoint:_lastPoint toPoint:point];
+        
+        if (CGRectContainsPoint(_canvas.frame, point)) {
+            [self drawLineFromPoint:_lastPoint toPoint:point];
+        }
     }
 }
 
