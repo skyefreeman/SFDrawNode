@@ -18,8 +18,9 @@ NSUInteger const kCacheSize = 10;
 @end
 
 @implementation SFDrawNode {
-    NSMutableArray *_pool;
-    SKSpriteNode *_canvas;
+    NSMutableDictionary * _currentPaths;
+    NSMutableArray * _pool;
+    SKSpriteNode * _canvas;
     CGPoint _lastPoint;
 }
 
@@ -43,6 +44,8 @@ NSUInteger const kCacheSize = 10;
         
         _canvas = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:size];
         [self addChild:_canvas];
+
+        _currentPaths = [NSMutableDictionary dictionary];
     }
     
     return self;
@@ -81,24 +84,32 @@ NSUInteger const kCacheSize = 10;
 }
 
 #pragma mark - Segment Rendering
-- (void)drawLineFromPoint:(CGPoint)firstPoint toPoint:(CGPoint)secondPoint {
-
+- (CGPathRef)newPathFromPoint:(CGPoint)firstPoint toPoint:(CGPoint)secondPoint {
     CGMutablePathRef path = CGPathCreateMutable();
     CGPathMoveToPoint(path, nil, firstPoint.x, firstPoint.y);
     CGPathAddLineToPoint(path, nil, secondPoint.x, secondPoint.y);
-    
-    SKShapeNode *newSegment = [self getShapeFromPool];
-    [newSegment setStrokeColor:self.drawColor];
-    [newSegment setLineWidth:self.lineWidth];
-    [newSegment setLineCap:self.lineCap];
-    [newSegment setName:@"segment"];
-    [newSegment setPath:path];
-    [newSegment setZPosition:1];
-    [_canvas addChild:newSegment];
+    return path;
+}
+
+- (SKShapeNode*)newShapeWithPath:(CGPathRef)path {
+    SKShapeNode *segment = [self getShapeFromPool];
+    [segment setStrokeColor:self.drawColor];
+    [segment setLineWidth:self.lineWidth];
+    [segment setLineCap:self.lineCap];
+    [segment setName:@"segment"];
+    [segment setPath:path];
+    [segment setZPosition:1];
+    return segment;
+}
+
+- (void)drawLineFromPoint:(CGPoint)firstPoint toPoint:(CGPoint)secondPoint key:(NSString*)key {
+    CGPathRef path = [self newPathFromPoint:firstPoint toPoint:secondPoint];
+    SKShapeNode *drawPath = [self newShapeWithPath:path];
+    [_canvas addChild:drawPath];
+
+    CGPathRelease(path);
     
     _lastPoint = secondPoint;
-    
-    CGPathRelease(path);
 }
 
 #pragma mark - DrawNode Controls
@@ -121,17 +132,21 @@ NSUInteger const kCacheSize = 10;
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     [self cacheSegments];
     for (UITouch *touch in touches) {
+        NSString *key = [NSString stringWithFormat:@"%d",(int)touch];
         CGPoint point = [touch locationInNode:self];
         _lastPoint = point;
-        [self drawLineFromPoint:_lastPoint toPoint:point];
+        
+        [self drawLineFromPoint:_lastPoint toPoint:point key:key];
     }
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *touch in touches) {
+        NSString *key = [NSString stringWithFormat:@"%d",(int)touch];
         CGPoint point = [touch locationInNode:self];
+        
         if (CGRectContainsPoint(_canvas.frame, point)) {
-            [self drawLineFromPoint:_lastPoint toPoint:point];
+            [self drawLineFromPoint:_lastPoint toPoint:point key:key];
         }
     }
 }
