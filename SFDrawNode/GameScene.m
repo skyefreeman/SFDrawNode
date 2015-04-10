@@ -19,7 +19,7 @@
     [self setBackgroundColor:[SKColor whiteColor]];
     
     self.drawNode = [SFDrawNode nodeWithSize:CGSizeMake(self.size.width, self.size.height)];
-//    [self.drawNode setPosition:CGPointMake(self.size.width/2, self.size.height/2)];
+    [self.drawNode setPosition:CGPointMake(self.size.width/2, self.size.height/2)];
     [self addChild:self.drawNode];
 
     SKSpriteNode *redButton = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100, 100)];

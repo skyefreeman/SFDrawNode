@@ -8,12 +8,11 @@
 
 #import "SFDrawNode.h"
 
-NSUInteger const kCacheSize = 10;
-
+#define kDefaultColor [SKColor blackColor];
 CGFloat const kDefaultLineWidth = 10.0;
 CGFloat const kDefaultLineCap = kCGLineCapRound;
 
-#define kDefaultColor [SKColor blackColor];
+NSUInteger const kCacheSize = 10;
 
 @interface SFDrawNode()
 @end
@@ -34,7 +33,7 @@ CGFloat const kDefaultLineCap = kCGLineCapRound;
     
     if (self) {
         self.userInteractionEnabled = YES;
-
+        
         self.drawColor = kDefaultColor;
         self.lineWidth = kDefaultLineWidth;
         self.lineCap = kDefaultLineCap;
@@ -98,6 +97,8 @@ CGFloat const kDefaultLineCap = kCGLineCapRound;
     [_canvas addChild:newSegment];
     
     _lastPoint = secondPoint;
+    
+    CGPathRelease(path);
 }
 
 #pragma mark - DrawNode Controls
@@ -129,7 +130,6 @@ CGFloat const kDefaultLineCap = kCGLineCapRound;
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *touch in touches) {
         CGPoint point = [touch locationInNode:self];
-        
         if (CGRectContainsPoint(_canvas.frame, point)) {
             [self drawLineFromPoint:_lastPoint toPoint:point];
         }
