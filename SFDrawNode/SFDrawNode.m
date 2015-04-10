@@ -106,10 +106,11 @@ NSUInteger const kCacheSize = 10;
     CGPathRef path = [self newPathFromPoint:firstPoint toPoint:secondPoint];
     SKShapeNode *drawPath = [self newShapeWithPath:path];
     [_canvas addChild:drawPath];
-
+    
     CGPathRelease(path);
     
     _lastPoint = secondPoint;
+    [_currentPaths setObject:[NSValue valueWithCGPoint:_lastPoint] forKey:key];
 }
 
 #pragma mark - DrawNode Controls
@@ -135,6 +136,7 @@ NSUInteger const kCacheSize = 10;
         NSString *key = [NSString stringWithFormat:@"%d",(int)touch];
         CGPoint point = [touch locationInNode:self];
         _lastPoint = point;
+        [_currentPaths setObject:[NSValue valueWithCGPoint:_lastPoint] forKey:key];
         
         [self drawLineFromPoint:_lastPoint toPoint:point key:key];
     }
@@ -146,13 +148,18 @@ NSUInteger const kCacheSize = 10;
         CGPoint point = [touch locationInNode:self];
         
         if (CGRectContainsPoint(_canvas.frame, point)) {
-            [self drawLineFromPoint:_lastPoint toPoint:point key:key];
+            CGPoint lastPoint = [(NSValue*)[_currentPaths objectForKey:key] CGPointValue];
+            [self drawLineFromPoint:lastPoint toPoint:point key:key];
         }
     }
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     [self cacheSegments];
+    for (UITouch *touch in touches) {
+        NSString *key = [NSString stringWithFormat:@"%d",(int)touch];
+        [_currentPaths removeObjectForKey:key];
+    }
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
